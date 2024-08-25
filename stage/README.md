@@ -12,6 +12,14 @@ AWS_PROFILE=dev terraform apply
 
 3. 
 ```bash
+cd data-stores/mysql
+AWS_PROFILE=dev terraform init
+AWS_PROFILE=dev terraform plan
+AWS_PROFILE=dev terraform apply
+```
+
+4. 
+```bash
 cd webserver
 AWS_PROFILE=dev terraform init
 AWS_PROFILE=dev terraform plan
