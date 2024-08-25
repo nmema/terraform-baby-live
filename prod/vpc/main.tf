@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "git::https://github.com/nmema/terraform-baby-modules.git//services/vpc?ref=v0.0.2"
+  source = "git::https://github.com/nmema/terraform-baby-modules.git//services/vpc?ref=v0.0.3"
 
   aws_region = "us-west-2"
 }

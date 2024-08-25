@@ -18,6 +18,16 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
+data "terraform_remote_state" "db" {
+  backend = "s3"
+
+  config = {
+    bucket = "terraform-baby-state-dev"
+    key    = "data-stores/mysql/terraform.tfstate"
+    region = "us-west-2"
+  }
+}
+
 resource "aws_security_group" "lb_sg" {
   name = "terraform-lb-sg"
 
@@ -112,11 +122,11 @@ resource "aws_launch_configuration" "launch_config" {
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.sg.id]
 
-  user_data = <<-EOF
-        #!/bin/bash
-        echo "Hello, World" > index.html
-        nohup busybox httpd -f -p ${var.server_port} &
-    EOF
+  user_data = templatefile("${path.module}/user-data.sh", {
+    server_port = var.server_port,
+    db_address  = data.terraform_remote_state.db.outputs.address,
+    db_port     = data.terraform_remote_state.db.outputs.port
+  })
 
   lifecycle {
     create_before_destroy = true
